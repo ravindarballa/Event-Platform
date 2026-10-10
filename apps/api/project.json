@@ -6,17 +6,23 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "command": "webpack-cli build",
-        "args": ["--node-env=production"],
-        "cwd": "apps/api"
+        "outputPath": "dist/apps/api",
+        "webpackConfig": "apps/api/webpack.config.js"
       },
       "configurations": {
-        "development": {
-          "args": ["--node-env=development"]
+        "production": {
+          "optimization": true,
+          "sourceMap": false
         }
       }
+    },
+    "production": {
+      "optimization": true,
+      "extractLicenses": true,
+      "inspect": false
     },
     "prune-lockfile": {
       "dependsOn": ["build"],
@@ -27,7 +33,8 @@
         "{workspaceRoot}/dist/apps/api/package-lock.json"
       ],
       "options": {
-        "buildTarget": "build"
+        "buildTarget": "api:build",
+        "inspect": false
       }
     },
     "copy-workspace-modules": {
@@ -44,20 +51,24 @@
       "executor": "nx:noop"
     },
     "serve": {
-      "continuous": true,
-      "executor": "@nx/js:node",
+      "executor": "@nx/node:node",
       "defaultConfiguration": "development",
-      "dependsOn": ["build"],
       "options": {
         "buildTarget": "api:build",
-        "runBuildTargetDependencies": false
+        "watch": true,
+        "inspect": false,
+        "port": 3000, 
+        "host": "localhost", 
+        "waitUntilTargets": [] 
       },
       "configurations": {
         "development": {
-          "buildTarget": "api:build:development"
+          "buildTarget": "api:build:development",
+          "watch": true
         },
         "production": {
-          "buildTarget": "api:build:production"
+          "buildTarget": "api:build:production",
+          "watch": false
         }
       }
     },

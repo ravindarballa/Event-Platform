@@ -4,7 +4,7 @@ const { join } = require('path');
 module.exports = {
   output: {
     path: join(__dirname, '../../dist/apps/api'),
-    clean: true,
+    // 1. Keep source maps only in development to reduce production bundle size
     ...(process.env.NODE_ENV !== 'production' && {
       devtoolModuleFilenameTemplate: '[absolute-resource-path]',
     }),
@@ -16,10 +16,14 @@ module.exports = {
       main: './src/main.ts',
       tsConfig: './tsconfig.app.json',
       assets: ['./src/assets'],
-      optimization: false,
+      // 2. Market Standard: Enable optimization ONLY in production
+      optimization: process.env.NODE_ENV === 'production',
+      // 3. Keep 'none' for Node.js apps to ensure predictable stack traces
       outputHashing: 'none',
+      // 4. Critical for 2025: Automatically creates a package.json in /dist for Docker
       generatePackageJson: true,
-      sourceMap: true,
+      // 5. Dynamic source maps
+      sourceMap: process.env.NODE_ENV !== 'production',
     }),
   ],
 };

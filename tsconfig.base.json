@@ -5,6 +5,7 @@
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
@@ -15,9 +16,21 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      // Frontend remotes
       "photography/Module": ["apps/photography/src/remote-entry.ts"],
       "hallbooking/Module": ["apps/hallbooking/src/remote-entry.ts"],
-      "@event-platform/shared-ui": ["libs/shared-ui/src/index.ts"]
+
+      // Shared libraries
+      "@event-platform/shared-ui": ["libs/shared-ui/src/index.ts"],
+
+      // Hall feature libraries
+      "@event-platform/api-hall-data-access": ["libs/api/hall/hallbooking-data-access/src/index.ts"],
+      "@event-platform/api-hall-feature": ["libs/api/hall/feature/src/index.ts"],
+
+      // Photography feature libraries
+      "@event-platform/photography-feature-gallery": ["libs/photography/feature-gallery/src/index.ts"],
+      "@event-platform/api-photo-data-access": ["libs/api/photography/photo-data-access/src/index.ts"],
+      "@event-platform/api-photography-feature": ["libs/api/photography/feature/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

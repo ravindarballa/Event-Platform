@@ -1,77 +1,119 @@
-# EventPlatform
+# Event Platform
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A **micro-frontend event services platform** built with **React 19**, **Nx**, and **Webpack Module Federation**.
+Each service (hall booking, photography, …) is an independently built and deployable app, loaded at runtime into a shared host shell.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+> 🚧 **Status:** Architecture and app scaffolding in place; feature screens are in progress.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+![CI](https://github.com/ravindarballa/Event-Platform/actions/workflows/ci.yml/badge.svg)
 
-## Finish your remote caching setup
+---
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/q6ODLJvh9a)
+## ✨ Why micro-frontends?
 
+- **Independent apps** – each service can be developed, tested, and deployed on its own.
+- **Lazy loading** – remotes are only downloaded when the user navigates to them.
+- **Shared UI library** – common components (e.g. the navbar) live in one place.
+- **Scalable** – new event services (catering, decoration, music…) can be added as new remotes without touching existing ones.
 
-## Run tasks
+## 🏗️ Architecture
 
-To run tasks with Nx use:
+```
+                ┌──────────────────────────┐
+                │   shell (host) :4200     │
+                │  Navbar + React Router   │
+                └───────────┬──────────────┘
+          lazy-loads via Module Federation
+              ┌─────────────┴─────────────┐
+              ▼                           ▼
+   ┌─────────────────────┐     ┌─────────────────────┐
+   │ hallbooking  :4202  │     │ photography  :4201  │
+   │   (remote)          │     │   (remote)          │
+   └─────────────────────┘     └─────────────────────┘
 
-```sh
-npx nx <target> <project-name>
+        libs/shared-ui  →  shared components (Navbar)
 ```
 
-For example:
+| Project | Type | Port | Route | Description |
+|---|---|---|---|---|
+| `apps/shell` | Host | 4200 | `/` | Main container: navigation, routing, loads remotes |
+| `apps/hallbooking` | Remote | 4202 | `/hallbooking/*` | Hall / venue booking module |
+| `apps/photography` | Remote | 4201 | `/photography/*` | Photography services module |
+| `libs/shared-ui` | Library | – | – | Shared React components |
 
-```sh
-npx nx build myproject
+## 🛠️ Tech stack
+
+| Area | Tools |
+|---|---|
+| UI | React 19, React Router 6, Tailwind CSS |
+| Monorepo | Nx 22 |
+| Micro-frontends | Webpack Module Federation (`@module-federation/enhanced`) |
+| Language | TypeScript 5.9 |
+| Testing | Jest, Vitest, React Testing Library |
+| Code quality | ESLint 9, Prettier |
+| CI | GitHub Actions (`nx run-many -t lint test build`) |
+
+## 🚀 Getting started
+
+**Prerequisites:** Node.js 20+ and npm.
+
+```bash
+git clone https://github.com/ravindarballa/Event-Platform.git
+cd Event-Platform
+npm install
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+Run the whole platform (host + all remotes):
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-To install a new plugin you can use the `nx add` command. Here's an example of adding the React plugin:
-```sh
-npx nx add @nx/react
+```bash
+npx nx serve shell
 ```
 
-Use the plugin's generator to create new projects. For example, to create a new React app or library:
+Then open http://localhost:4200.
 
-```sh
-# Generate an app
-npx nx g @nx/react:app demo
+Run a single remote on its own:
 
-# Generate a library
-npx nx g @nx/react:lib some-lib
+```bash
+npx nx serve hallbooking   # http://localhost:4202
+npx nx serve photography   # http://localhost:4201
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+## 📜 Common commands
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+| Command | What it does |
+|---|---|
+| `npx nx graph` | Visualise the project dependency graph |
+| `npx nx build shell` | Production build of the host (and its remotes) |
+| `npx nx run-many -t test` | Run tests in all projects |
+| `npx nx run-many -t lint` | Lint all projects |
+| `npx nx affected -t build` | Build only what changed |
 
+## 📁 Project structure
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```
+Event-Platform/
+├── apps/
+│   ├── shell/          # host app
+│   ├── hallbooking/    # remote app
+│   └── photography/    # remote app
+├── libs/
+│   └── shared-ui/      # shared components
+├── .github/workflows/  # CI pipeline
+└── nx.json             # Nx workspace config
+```
 
-## Install Nx Console
+## 🗺️ Roadmap
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+- [ ] Hall booking: venue listing, availability calendar, booking form
+- [ ] Photography: packages, portfolio gallery, enquiry form
+- [ ] Backend API with NestJS
+- [ ] Authentication
+- [ ] Deploy host and remotes (e.g. Vercel / Netlify)
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 👤 Author
 
-## Useful links
+**Ravindar Balla** – [GitHub](https://github.com/ravindarballa)
 
-Learn more:
+## 📄 License
 
-- [Learn more about this workspace setup](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+MIT
