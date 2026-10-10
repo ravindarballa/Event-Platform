@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "module": "commonjs",
+    "types": ["node"],
+    "composite": true,
+    "declaration": true,
+    "jsx": "react-jsx" // <--- ADD THIS LINE
+  },
+  "include": [
+    "src/**/*.ts", 
+    "../../libs/**/*.ts",
+    "../../libs/**/*.tsx" // <--- ADD THIS to include .tsx files
+  ],
+  "exclude": [
+    "jest.config.ts",
+    "jest.config.cts",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts"
+  ]
+}

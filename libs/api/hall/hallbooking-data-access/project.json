@@ -1,0 +1,27 @@
+{
+  "name": "api-hall-hallbooking-data-access",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/hall/hallbooking-data-access/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/api/hall/hallbooking-data-access",
+        "tsConfig": "libs/api/hall/hallbooking-data-access/tsconfig.lib.json",
+        "packageJson": "libs/api/hall/hallbooking-data-access/package.json",
+        "main": "libs/api/hall/hallbooking-data-access/src/index.ts",
+        "assets": ["libs/api/hall/hallbooking-data-access/*.md"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/api/hall/hallbooking-data-access/jest.config.cts"
+      }
+    }
+  }
+}

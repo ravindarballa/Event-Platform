@@ -1,18 +1,18 @@
 import { Link } from 'react-router-dom';
 
-export function Navbar() {
+interface NavLink {
+  path: string;
+  label: string;
+}
+export function Navbar({ links }: { links: NavLink[] }) {
   return (
     <nav>
       <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/hallbooking">Hallbooking</Link>
-        </li>
-        <li>
-          <Link to="/photography">Photography</Link>
-        </li>
+        {links.map((link) => (
+          <li key={link.path}>
+            <Link to={link.path}>{link.label}</Link>
+          </li>
+        ))}
       </ul>
     </nav>
   );

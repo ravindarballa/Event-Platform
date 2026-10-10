@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "types": ["node"],
+    "composite": true,
+    "declaration": true,
+    "jsx": "react-jsx" 
+  },
+ "include": ["src/**/*.ts"],
+  "references": [
+    { "path": "../../libs/api/hall/feature" },
+    { "path": "../../libs/api/hall/hallbooking-data-access" },
+    { "path": "../../libs/api/photography/feature" },
+    { "path": "../../libs/api/photography/photo-data-access" }
+  ],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "test/**/*.spec.ts",
+    "node_modules"
+  ]
+}

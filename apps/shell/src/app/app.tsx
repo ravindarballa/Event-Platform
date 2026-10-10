@@ -6,9 +6,14 @@ const Hallbooking = lazy(() => import('hallbooking/Module'));
 const Photography = lazy(() => import('photography/Module'));
 
 export function App() {
+  const navLinks = [
+    { path: '/', label: 'Home' },
+    { path: '/hallbooking', label: 'Hallbooking' },
+    { path: '/photography', label: 'Photography' },
+  ];
   return (
     <BrowserRouter>
-      <Navbar />
+      <Navbar  links={navLinks} />
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/" element={<div>Home</div>} />
